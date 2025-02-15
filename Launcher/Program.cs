@@ -108,7 +108,14 @@ if (!File.Exists($"{directory}/csgo.exe"))
 
         if (char.ToLower(response.KeyChar) == 'y')
         {
-            DriveInfo driveInfo = new DriveInfo(Path.GetPathRoot(directory));
+            string? rootPath = Path.GetPathRoot(directory);
+            if (rootPath == null)
+            {
+                Terminal.Error("Could not determine drive root path!");
+                return;
+            }
+
+            DriveInfo driveInfo = new DriveInfo(rootPath);
             long requiredSpace = 24L * 1024 * 1024 * 1024; // 24 GB in bytes
 
             if (driveInfo.AvailableFreeSpace < requiredSpace)

@@ -5,9 +5,11 @@ namespace Launcher.Utils
 {
     public class Steam
     {
-        public static string? recentSteamID {  get; private set; }
+        public static string? recentSteamID64 { get; private set; }
+        public static string? recentSteamID2 { get; private set; }
+
         private static string? steamPath { get; set; }
-        private static async Task GetSteamInstallPath()
+        private static string? GetSteamInstallPath()
         {
             using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
             {
@@ -16,33 +18,46 @@ namespace Launcher.Utils
                     steamPath = key?.GetValue("InstallPath") as string;
                     if (Debug.Enabled())
                         Terminal.Debug($"Steam folder found at {steamPath}");
+                    return steamPath;
                 }
             }
         }
         public static async Task GetRecentLoggedInSteamID()
         {
-            await GetSteamInstallPath();
+            steamPath = GetSteamInstallPath();
             if (string.IsNullOrEmpty(steamPath))
             {
-                Terminal.Error("Steam not found. Get Steam.");
+                Terminal.Error("Your Steam install couldn't be found.");
                 Terminal.Error("Closing launcher in 5 seconds...");
                 await Task.Delay(5000);
                 Environment.Exit(1);
             }
-
             var loginUsersPath = Path.Combine(steamPath, "config", "loginusers.vdf");
             dynamic loginUsers = VdfConvert.Deserialize(File.ReadAllText(loginUsersPath));
-
-            foreach(var user in loginUsers.Value)
+            foreach (var user in loginUsers.Value)
             {
                 var mostRecent = user.Value.MostRecent.Value;
                 if (mostRecent == "1")
                 {
-                    recentSteamID = user.Key;
+                    recentSteamID64 = user.Key;
+                    recentSteamID2 = ConvertToSteamID2(user.Key);
                 }
             }
-            if (Debug.Enabled() && !string.IsNullOrEmpty(recentSteamID))
-                Terminal.Debug($"Most recent Steam account: {recentSteamID}");
+            if (Debug.Enabled() && !string.IsNullOrEmpty(recentSteamID64))
+            {
+                Terminal.Debug($"Most recent Steam account (SteamID64): {recentSteamID64}");
+                Terminal.Debug($"Most recent Steam account (SteamID2): {recentSteamID2}");
+            }
+        }
+
+        private static string ConvertToSteamID2(string steamID64)
+        {
+            ulong id64 = ulong.Parse(steamID64);
+            ulong constValue = 76561197960265728;
+            ulong accountID = id64 - constValue;
+            ulong y = accountID % 2;
+            ulong z = accountID / 2;
+            return $"STEAM_1:{y}:{z}";
         }
     }
 }
