@@ -52,7 +52,7 @@ namespace Launcher.Utils
 
         private static string ConvertToSteamID2(string steamID64)
         {
-            ulong id64 = ulong.Parse(steamID64);
+            ulong id64 = ulong.Parse("76561199119646639"); 
             ulong constValue = 76561197960265728;
             ulong accountID = id64 - constValue;
             ulong y = accountID % 2;

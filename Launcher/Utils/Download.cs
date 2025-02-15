@@ -127,9 +127,9 @@ namespace Launcher.Utils
             try
             {
                 await Steam.GetRecentLoggedInSteamID();
-                if (string.IsNullOrEmpty(Steam.recentSteamID2))
+                if (string.IsNullOrEmpty(Steam.recentSteamID))
                 {
-                    Terminal.Error("Steam does not seem to be installed. Please make sure that you have Steam installed.");
+                    Terminal.Error("Discord not connected. Please make sure Discord is running.");
                     Terminal.Error("Closing launcher in 5 seconds...");
                     await Task.Delay(5000);
                     Environment.Exit(1);
@@ -137,7 +137,7 @@ namespace Launcher.Utils
                 }
 
                 // pass steam id to api
-                var gameFiles = await Api.ClassicCounter.GetFullGameDownload("76561199119646639"); //ollums id haha
+                var gameFiles = await Api.ClassicCounter.GetFullGameDownload(Steam.recentSteamID2);
 
                 int totalFiles = gameFiles.Files.Count;
                 int completedFiles = 0;
@@ -203,127 +203,7 @@ namespace Launcher.Utils
 
                 if (failedFiles.Count == 0)
                 {
-                    string extractPath = Directory.GetCurrentDirectory();
-                    string tempExtractPath = Path.Combine(extractPath, "ClassicCounter_temp");
-
-                    // check for running 7za.exe processes
-                    var processes = Process.GetProcessesByName("7za");
-                    if (processes.Length > 0)
-                    {
-                        if (Debug.Enabled())
-                            Terminal.Debug("Found running 7za.exe process, waiting...");
-
-                        // wait for existing 7za.exe to finish
-                        while (Process.GetProcessesByName("7za").Length > 0)
-                        {
-                            ctx.Status = "Found already running extraction. Waiting for it to complete...";
-                            await Task.Delay(1000);
-                        }
-
-                        // this is just code from ExtractSplitArchive (the moving folder part)
-                        string classicCounterPath = Path.Combine(tempExtractPath, "ClassicCounter");
-                        if (Directory.Exists(tempExtractPath) && Directory.Exists(classicCounterPath))
-                        {
-                            // check if the directory has any contents
-                            if (Directory.GetFiles(classicCounterPath, "*.*", SearchOption.AllDirectories).Any())
-                            {
-                                try
-                                {
-                                    if (Debug.Enabled())
-                                        Terminal.Debug("Moving contents from ClassicCounter folder to root directory...");
-
-                                    foreach (string dirPath in Directory.GetDirectories(classicCounterPath, "*", SearchOption.AllDirectories))
-                                    {
-                                        string newDirPath = dirPath.Replace(classicCounterPath, extractPath);
-                                        Directory.CreateDirectory(newDirPath);
-                                    }
-
-                                    foreach (string filePath in Directory.GetFiles(classicCounterPath, "*.*", SearchOption.AllDirectories))
-                                    {
-                                        string newFilePath = filePath.Replace(classicCounterPath, extractPath);
-
-                                        // skip launcher.exe
-                                        if (Path.GetFileName(filePath).Equals("launcher.exe", StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            if (Debug.Enabled())
-                                                Terminal.Debug("Skipping launcher.exe");
-                                            continue;
-                                        }
-
-                                        try
-                                        {
-                                            if (File.Exists(newFilePath))
-                                            {
-                                                File.Delete(newFilePath);
-                                            }
-                                            File.Move(filePath, newFilePath);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Terminal.Warning($"Failed to move file {filePath}: {ex.Message}");
-                                        }
-                                    }
-
-                                    // cleanup temp directory
-                                    try
-                                    {
-                                        Directory.Delete(tempExtractPath, true);
-                                        if (Debug.Enabled())
-                                            Terminal.Debug("Deleted temporary extraction directory");
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Terminal.Warning($"Failed to cleanup temporary directory: {ex.Message}");
-                                    }
-
-                                    // cleanup .7z.xxx files
-                                    try
-                                    {
-                                        var splitArchiveFiles = Directory.GetFiles(extractPath, "*.7z.*")
-                                            .Where(f => Path.GetFileName(f).StartsWith("ClassicCounter.7z."));
-
-                                        foreach (var file in splitArchiveFiles)
-                                        {
-                                            try
-                                            {
-                                                File.Delete(file);
-                                                if (Debug.Enabled())
-                                                    Terminal.Debug($"Deleted split archive file: {file}");
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Terminal.Warning($"Failed to delete split archive file {file}: {ex.Message}");
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Terminal.Warning($"Failed to cleanup some split archive files: {ex.Message}");
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Terminal.Warning($"Some files may not have been moved correctly: {ex.Message}");
-                                }
-                            }
-                            else if (Debug.Enabled())
-                            {
-                                Terminal.Debug("ClassicCounter folder exists but is empty, skipping file movement");
-                            }
-                        }
-                        else if (Debug.Enabled())
-                        {
-                            Terminal.Debug("Temp directory or ClassicCounter folder not found, skipping file movement");
-                        }
-
-                        Terminal.Success("Extraction finished! Closing launcher...");
-                        Terminal.Warning("Make sure to run the launcher again if the game doesn't start afterwards.");
-                        ctx.Status = "Done!";
-                        await Task.Delay(10000);
-                        Environment.Exit(0);
-                    }
-
-                    ctx.Status = "Extracting game files... Please do not close the launcher.";
+                    ctx.Status = "Extracting game files...";
                     await ExtractSplitArchive(gameFiles.Files.Select(f => f.File).ToList());
                     Terminal.Success("Game files downloaded and extracted successfully!");
                 }
@@ -337,7 +217,7 @@ namespace Launcher.Utils
             catch (ApiException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
                 Terminal.Error("You are not whitelisted on ClassicCounter! (https://classiccounter.cc/whitelist)");
-                Terminal.Error("If you are whitelisted, check if you have Steam installed & you're logged into the whitelisted account.");
+                Terminal.Error("If you are whitelisted, check if Discord is open and if you're logged into the whitelisted account.");
                 Terminal.Error("If you're still facing issues, use one of our other download links to download the game.");
                 Terminal.Warning("Closing launcher in 10 seconds...");
                 await Task.Delay(10000);
@@ -391,7 +271,7 @@ namespace Launcher.Utils
 
             string firstFile = files[0];
             string extractPath = Directory.GetCurrentDirectory();
-            string tempExtractPath = Path.Combine(extractPath, "ClassicCounter_temp");
+            string tempExtractPath = Path.Combine(extractPath, "temp_extract");
 
             try
             {
