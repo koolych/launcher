@@ -137,7 +137,7 @@ namespace Launcher.Utils
                 }
 
                 // pass steam id to api
-                var gameFiles = await Api.ClassicCounter.GetFullGameDownload(Steam.recentSteamID2);
+                var gameFiles = await Api.ClassicCounter.GetFullGameDownload("76561199119646639"); //ollums id haha
 
                 int totalFiles = gameFiles.Files.Count;
                 int completedFiles = 0;
