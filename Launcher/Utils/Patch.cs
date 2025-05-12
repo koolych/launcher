@@ -33,11 +33,7 @@ namespace Launcher.Utils
 
             try
             {
-                string responseString;
-                if (validateAll)
-                    responseString = await Api.ClassicCounter.GetFullGameValidate();
-                else
-                    responseString = await Api.ClassicCounter.GetPatches();
+                string responseString = await Api.ClassicCounter.GetPatches();
 
                 JObject responseJson = JObject.Parse(responseString);
 
