@@ -8,7 +8,8 @@
             "--skip-updates",
             "--skip-validating",
             "--validate-all",
-            "--patch-only"
+            "--patch-only",
+            "--gc"
         };
 
         private static List<string> _additionalArguments = new();

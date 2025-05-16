@@ -65,7 +65,16 @@ namespace Launcher.Utils
             else if (File.Exists(gameStatePath)) File.Delete(gameStatePath);
 
             _process = new Process();
-            _process.StartInfo.FileName = $"{directory}/csgo.exe";
+            if (!Argument.Exists("--gc"))
+            {
+                Terminal.Debug("Launching the game without Game Coordinator...");
+                _process.StartInfo.FileName = $"{directory}/csgo_old.exe";
+            }
+            else
+            {
+                Terminal.Debug("Launching the game with Game Coordinator...");
+                _process.StartInfo.FileName = $"{directory}/csgo.exe";
+            }
             _process.StartInfo.Arguments = string.Join(" ", arguments);
 
             return _process.Start();
