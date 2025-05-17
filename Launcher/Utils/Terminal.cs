@@ -15,7 +15,6 @@ namespace Launcher.Utils
             AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Launcher maintained by [/][purple4_1]koolych[/][{_grey}][/]");
             AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Coded by [/][lightcoral]heapy[/][{_grey}][/]");
             AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]https://github.com/ClassicCounter [/]");
-            AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]https://github.com/koolych/launcher [/]");
             AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Version: {Version.Current}[/]");
         }
 
