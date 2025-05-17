@@ -6,13 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Company>ClassicCounter Team</Company>
-    <Version>2.2.3.0</Version>
+    <Version>2.2.5.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
 	  <FileVersion>$(Version)</FileVersion> 
     <AssemblyName>launcher</AssemblyName>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <Product>ClassicCounter Launcher</Product>
-    <Authors>ClassicCounter Team</Authors>
+    <Authors>ClassicCounter Team, koolych</Authors>
 
     <NoWarn>NU1701</NoWarn> <!-- shut stupid CSGSI warning -->
 
