@@ -9,7 +9,8 @@
             "--skip-validating",
             "--validate-all",
             "--patch-only",
-            "--gc"
+            "--gc",
+            "--disable-rpc"
         };
 
         private static List<string> _additionalArguments = new();
