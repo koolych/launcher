@@ -1,6 +1,7 @@
 ﻿using CSGSI;
 using CSGSI.Nodes;
 using Downloader;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
@@ -22,7 +23,7 @@ namespace Launcher.Utils
         public static async Task DownloadGCVer(string reason)
         {
 
-            Terminal.Error($"{reason} Downloading it...");
+            Terminal.Error($"{reason} Downloading cc.exe ...");
             // sry if i mess smth up, never used this lib ~ ZRD/Zordon1337
             DownloadService downloadService = new();
             await downloadService.DownloadFileTaskAsync("https://patch.classiccounter.cc/cc.exe", _process?.StartInfo.FileName);
@@ -95,6 +96,54 @@ namespace Launcher.Utils
                 {
                     await DownloadGCVer("GC executable not found.");
                 }
+                // getting md5 checksum from cc.exe 
+                // ps: Method Patch.GetHash() is private, since its not my code im not gonna make it public just use custom code ~ ZRD
+                var md5 = MD5.Create();
+                var stream = File.OpenRead(_process.StartInfo.FileName);
+                var hash = md5.ComputeHash(stream);
+                var res = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                stream.Close();
+
+                string responseString = await Api.ClassicCounter.GetPatches();
+
+                JObject responseJson = JObject.Parse(responseString);
+
+                if (responseJson["files"] != null)
+                {
+                    var patches = responseJson["files"]!.ToObject<Patch[]>()!.ToList();
+                    var cc = patches?.Find(patches => patches.File == "cc.exe");
+
+                    // wtf?
+                    // i mean, most likely it won't happen but just in case
+                    if(cc == null)
+                    {
+                        if (Argument.Exists("--debug-mode"))
+                            Terminal.Error("Couldn't find cc.exe patch in API response.");
+                        else
+                            Terminal.Error("Error occurred on api side, please try again later.");
+                        return false;
+                    } else
+                    {
+                        if(cc.Hash != res)
+                        {
+                            if (Argument.Exists("--debug-mode"))
+                                Terminal.Debug("cc.exe hash doesn't match, downloading new version...");
+                            await DownloadGCVer("Game Coordinator executable hash mismatch.");
+                        }
+                        else
+                        {
+                            if (Argument.Exists("--debug-mode"))
+                                Terminal.Debug("cc.exe hash is ok");
+                        }
+                    }
+                } else
+                {
+                    Terminal.Error("Couldn't get patches from API, please try again later.");
+                    return false;
+                }
+                   
+
+
             }
             _process.StartInfo.Arguments = string.Join(" ", arguments);
 
