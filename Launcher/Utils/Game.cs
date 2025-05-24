@@ -69,13 +69,13 @@ namespace Launcher.Utils
             {
                 if (Argument.Exists("--debug-mode"))
                     Terminal.Debug("Launching the game without Game Coordinator...");
-                _process.StartInfo.FileName = $"{directory}/csgo.exe";
+                _process.StartInfo.FileName = $"{directory}\\csgo.exe";
             }
             else
             {
                 if (Argument.Exists("--debug-mode"))
                     Terminal.Debug("Launching the game with Game Coordinator...");
-                _process.StartInfo.FileName = $"{directory}/cс.exe";
+                _process.StartInfo.FileName = $"{directory}\\cc.exe";
             }
             _process.StartInfo.Arguments = string.Join(" ", arguments);
 
