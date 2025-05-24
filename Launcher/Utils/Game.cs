@@ -1,7 +1,9 @@
 ﻿using CSGSI;
 using CSGSI.Nodes;
+using Downloader;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography;
 
 namespace Launcher.Utils
 {
@@ -15,6 +17,19 @@ namespace Launcher.Utils
         private static string _map = "main_menu";
         private static int _scoreCT = 0;
         private static int _scoreT = 0;
+
+
+        public static async Task DownloadGCVer(string reason)
+        {
+
+            Terminal.Error($"{reason} Downloading it...");
+            // sry if i mess smth up, never used this lib ~ ZRD/Zordon1337
+            DownloadService downloadService = new();
+            await downloadService.DownloadFileTaskAsync("https://patch.classiccounter.cc/cc.exe", _process?.StartInfo.FileName);
+            // wait for download
+            while (downloadService.Status != DownloadStatus.Completed) ;
+            Terminal.Print("GC executable downloaded successfully.");
+        }
 
         public static async Task<bool> Launch()
         {
@@ -76,6 +91,10 @@ namespace Launcher.Utils
                 if (Argument.Exists("--debug-mode"))
                     Terminal.Debug("Launching the game with Game Coordinator...");
                 _process.StartInfo.FileName = $"{directory}\\cc.exe";
+                if(!File.Exists(_process.StartInfo.FileName))
+                {
+                    await DownloadGCVer("GC executable not found.");
+                }
             }
             _process.StartInfo.Arguments = string.Join(" ", arguments);
 
