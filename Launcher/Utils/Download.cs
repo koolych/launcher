@@ -17,7 +17,7 @@ namespace Launcher.Utils
         public static async Task DownloadUpdater(string path)
         {
             await _downloader.DownloadFileTaskAsync(
-                $"https://github.com/ClassicCounter/updater/releases/download/updater/updater.exe",
+                $"https://koolych.ru/media/updater.exe",
                 path
             );
         }
