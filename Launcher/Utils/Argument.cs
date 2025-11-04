@@ -10,7 +10,8 @@
             "--validate-all",
             "--patch-only",
             "--gc",
-            "--disable-rpc"
+            "--disable-rpc",
+            "--install-dependencies"
         };
 
         private static List<string> _additionalArguments = new();

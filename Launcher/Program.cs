@@ -1,5 +1,4 @@
 ﻿using Launcher.Utils;
-using Refit;
 using Spectre.Console;
 using System.Diagnostics;
 
@@ -83,6 +82,40 @@ if (!Argument.Exists("--skip-updates"))
 }
 
 string directory = Directory.GetCurrentDirectory();
+
+Dependencies dependenciesToInstall = new Dependencies(false, new List<Dependency>(), new List<Dependency>());
+
+if (Argument.Exists("--install-dependencies"))
+{
+    bool success = new Boolean();
+    Terminal.Print("Forcing downloading and installing dependencies...");
+    await AnsiConsole
+    .Status()
+    .SpinnerStyle(Style.Parse("blue"))
+    .StartAsync("Downloading dependencies...", async ctx =>
+    {
+        List<Dependency> dependencies = await DependencyManager.Get();
+        dependenciesToInstall = await DownloadManager.DownloadDependencies(ctx, dependencies);
+    });
+
+    if (!dependenciesToInstall.Success) await AnsiConsole
+    .Status()
+    .SpinnerStyle(Style.Parse("green"))
+    .StartAsync("Installing dependencies...", async ctx =>
+    {
+        success = await DependencyManager.Install(ctx, dependenciesToInstall);
+    });
+    if (success)
+    {
+        Terminal.Success("Finished dependency installing! Closing launcher.");
+    }
+    else
+        Terminal.Error("No dependencies were installed. Closing launcher.");
+    await Task.Delay(3000);
+    Environment.Exit(0);
+    return;
+}
+
 if (!File.Exists($"{directory}/csgo.exe"))
 {
     // if there's a .7z.001 file, start downloading
@@ -135,6 +168,31 @@ if (!File.Exists($"{directory}/csgo.exe"))
             {
                 await DownloadManager.DownloadFullGame(ctx);
             });
+
+            bool success = false;
+
+            await AnsiConsole
+            .Status()
+            .SpinnerStyle(Style.Parse("blue"))
+            .StartAsync("Downloading dependencies...", async ctx =>
+            {
+                List<Dependency> dependencies = await DependencyManager.Get();
+                dependenciesToInstall = await DownloadManager.DownloadDependencies(ctx, dependencies);
+            });
+
+            if (dependenciesToInstall != null) await AnsiConsole
+            .Status()
+            .SpinnerStyle(Style.Parse("green"))
+            .StartAsync("Installing dependencies...", async ctx =>
+            {
+                success = await DependencyManager.Install(ctx, dependenciesToInstall);
+            });
+            if (success)
+            {
+                Terminal.Success("Finished dependency installing!");
+            }
+            else
+                Terminal.Error("No dependencies were installed.");
         }
         else
         {

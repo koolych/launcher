@@ -23,6 +23,7 @@
 - `--patch-only` - Will only check for patches, won't open the game.
 - `--disable-rpc` - Disables Discord RPC.
 - `--gc` - Launches the Game with custom Game Coordinator.
+- `--install-dependencies` - Launches setup process for required Game dependencies.
 
 > [!CAUTION]
 > **Using `--skip-updates` or `--skip-validating` is NOT recommended!**  
