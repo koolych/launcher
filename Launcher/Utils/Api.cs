@@ -19,6 +19,11 @@ namespace Launcher.Utils
         [Headers("User-Agent: ClassicCounter Launcher")]
         [Get("/repos/koolych/launcher/releases/latest")]
         Task<string> GetLatestRelease();
+
+        [Headers("User-Agent: ClassicCounter Launcher",
+            "Accept: application/vnd.github.raw+json")]
+        [Get("/repos/koolych/launcher/contents/dependencies.json")]
+        Task<string> GetDependencies();
     }
 
     public interface IClassicCounter
