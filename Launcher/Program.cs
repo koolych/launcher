@@ -108,6 +108,7 @@ if (Argument.Exists("--install-dependencies"))
     if (success)
     {
         Terminal.Success("Finished dependency installing! Closing launcher.");
+        Terminal.SteamHappy();
     }
     else
         Terminal.Error("No dependencies were installed. Closing launcher.");
