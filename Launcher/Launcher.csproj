@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Company>ClassicCounter Team</Company>
-    <Version>2.2.5.0</Version>
+    <Version>2.2.6.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
 	  <FileVersion>$(Version)</FileVersion> 
     <AssemblyName>launcher</AssemblyName>
