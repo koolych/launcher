@@ -242,7 +242,7 @@ if (!Argument.Exists("--skip-validating"))
             else
             {
                 Terminal.Error("(!) Couldn't validate game files!");
-                Terminal.Error("(!) Is your ISP blocking CloudFlare? Check your DNS settings.");
+                Terminal.Error("(!) Is your ISP blocking CloudFlare? Check your Network settings.");
                 return;
             }
 
@@ -265,7 +265,7 @@ if (!Argument.Exists("--skip-validating"))
         else
         {
             Terminal.Error("(!) Couldn't validate patches!");
-            Terminal.Error("(!) Is your ISP blocking CloudFlare? Check your DNS settings.");
+            Terminal.Error("(!) Is your ISP blocking CloudFlare? Check your Network settings.");
             if (!Argument.Exists("--patch-only"))
             {
                 Terminal.Warning("Launching ClassicCounter anyways...");
@@ -339,7 +339,7 @@ else if (Argument.Exists("--disable-rpc"))
     await Task.Delay(5000);
 }
 else
-{ 
+{
     Terminal.Success("Launched ClassicCounter! Launcher will minimize in 5 seconds to manage Discord RPC.");
     await Task.Delay(5000);
 
