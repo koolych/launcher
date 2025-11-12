@@ -17,7 +17,7 @@ namespace Launcher.Utils
     public interface IGitHub
     {
         [Headers("User-Agent: ClassicCounter Launcher")]
-        [Get("/repos/koolych/launcher/releases/latest")]
+        [Get("/repos/ClassicCounter/launcher/releases/latest")]
         Task<string> GetLatestRelease();
 
         [Headers("User-Agent: ClassicCounter Launcher",
