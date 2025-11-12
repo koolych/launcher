@@ -22,7 +22,7 @@ namespace Launcher.Utils
 
         [Headers("User-Agent: ClassicCounter Launcher",
             "Accept: application/vnd.github.raw+json")]
-        [Get("/repos/koolych/launcher/contents/dependencies.json")]
+        [Get("/repos/ClassicCounter/launcher/contents/dependencies.json")]
         Task<string> GetDependencies();
     }
 
