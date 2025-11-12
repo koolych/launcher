@@ -22,6 +22,33 @@ namespace Launcher.Utils
             );
         }
 
+        public static async Task<Dependencies> DownloadDependencies(StatusContext ctx, List<Dependency> dependencies)
+        {
+            List<Dependency> local = new List<Dependency>();
+            List<Dependency> remote = new List<Dependency>();
+            Dependencies? _dependencies;
+            foreach (var dependency in dependencies)
+            {
+                if (dependency.URL != null)
+                {
+                    if (File.Exists($"{Directory.GetCurrentDirectory()}{dependency.Path}"))
+                        File.Delete($"{Directory.GetCurrentDirectory()}{dependency.Path}");
+                    if (Debug.Enabled())
+                        Terminal.Debug($"Downloading {dependency.Name}");
+                    await _downloader.DownloadFileTaskAsync(
+                        $"{dependency.URL}",
+                        $"{Directory.GetCurrentDirectory()}{dependency.Path}");
+                    remote.Add(dependency);
+                }
+                else
+                {
+                    local.Add(dependency);
+                }
+            }
+            _dependencies = new Dependencies(false, local, remote);
+            return _dependencies;
+        }
+
         public static async Task DownloadPatch(
             Patch patch,
             bool validateAll = false,

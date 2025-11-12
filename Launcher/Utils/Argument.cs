@@ -8,7 +8,10 @@
             "--skip-updates",
             "--skip-validating",
             "--validate-all",
-            "--patch-only"
+            "--patch-only",
+            "--gc",
+            "--disable-rpc",
+            "--install-dependencies"
         };
 
         private static List<string> _additionalArguments = new();

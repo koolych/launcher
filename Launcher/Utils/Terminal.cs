@@ -1,4 +1,5 @@
 ﻿using Spectre.Console;
+using System.Reflection;
 
 namespace Launcher.Utils
 {
@@ -7,11 +8,12 @@ namespace Launcher.Utils
         private static string _prefix = "[orange1]Classic[/][blue]Counter[/]";
         private static string _grey = "grey82";
         private static string _seperator = "[grey50]|[/]";
-
+        static Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Launcher.assets.steamhappy.txt");
+        static string steamhappy = new StreamReader(stream).ReadToEnd();
         public static void Init()
         {
-            AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Launcher maintained by [/][mediumspringgreen]Ollum[/][{_grey}][/]");
-            AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Coded with love by [/][lightcoral]heapy <3[/][{_grey}][/]");
+            AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Launcher maintained by [/][purple4_1]koolych[/][{_grey}][/]");
+            AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Coded by [/][lightcoral]heapy[/][{_grey}][/]");
             AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]https://github.com/ClassicCounter [/]");
             AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Version: {Version.Current}[/]");
         }
@@ -30,6 +32,9 @@ namespace Launcher.Utils
 
         public static void Debug(object? message)
             => AnsiConsole.MarkupLine($"[purple]{Markup.Escape(message?.ToString() ?? string.Empty)}[/]");
+        
+        public static void SteamHappy() =>
+            AnsiConsole.Write(steamhappy);
 
         private static string Date()
             => $"[{_grey}]{DateTime.Now.ToString("HH:mm:ss")}[/]";

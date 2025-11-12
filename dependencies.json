@@ -1,0 +1,19 @@
+{
+	"files":[
+		{
+			"name": "dxsetup.exe",
+			"download_url": null,
+			"path": "/directx_installer/dxsetup.exe"
+		},
+		{
+			"name": "vc_redist.x86.exe",
+			"download_url": "https://aka.ms/vs/17/release/vc_redist.x86.exe",
+			"path": "/dependencies/vc_redist.x86.exe"
+		},
+		{
+			"name": "vc_redist.x64.exe",
+			"download_url": "https://aka.ms/vs/17/release/vc_redist.x64.exe",
+			"path": "/dependencies/vc_redist.x64.exe"
+		}
+	]
+}

@@ -401,3 +401,4 @@ FodyWeavers.xsd
 
 publish/*
 .DS_Store
+/Launcher/Properties
