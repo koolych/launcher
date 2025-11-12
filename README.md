@@ -37,11 +37,11 @@
 - [Spectre.Console](https://github.com/spectreconsole/spectre.console) by [Spectre Console](https://github.com/spectreconsole)
 - [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) by [shravan2x](https://github.com/shravan2x)
 
-[downloads-shield]: https://img.shields.io/github/downloads/koolych/launcher/total.svg?style=for-the-badge
-[downloads-url]: https://github.com/koolych/launcher/releases/latest
-[stars-shield]: https://img.shields.io/github/stars/koolych/launcher.svg?style=for-the-badge
-[stars-url]: https://github.com/koolych/launcher/stargazers
-[issues-shield]: https://img.shields.io/github/issues/koolych/launcher.svg?style=for-the-badge
-[issues-url]: https://github.com/koolych/launcher/issues
-[license-shield]: https://img.shields.io/github/license/koolych/launcher.svg?style=for-the-badge
-[license-url]: https://github.com/koolych/launcher/blob/main/LICENSE.txt
+[downloads-shield]: https://img.shields.io/github/downloads/classiccounter/launcher/total.svg?style=for-the-badge
+[downloads-url]: https://github.com/classiccounter/launcher/releases/latest
+[stars-shield]: https://img.shields.io/github/stars/classiccounter/launcher.svg?style=for-the-badge
+[stars-url]: https://github.com/classiccounter/launcher/stargazers
+[issues-shield]: https://img.shields.io/github/issues/classiccounter/launcher.svg?style=for-the-badge
+[issues-url]: https://github.com/classiccounter/launcher/issues
+[license-shield]: https://img.shields.io/github/license/classiccounter/launcher.svg?style=for-the-badge
+[license-url]: https://github.com/classiccounter/launcher/blob/main/LICENSE.txt
