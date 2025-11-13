@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Spectre.Console;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace Launcher.Utils
 {
@@ -15,6 +17,28 @@ namespace Launcher.Utils
 
         [JsonProperty(PropertyName = "path")]
         public required string Path { get; set; }
+
+        [JsonProperty(PropertyName = "registry")]
+        public required List<Registry> RegistryList { get; set; }
+
+        public class Registry
+        {
+            [JsonProperty(PropertyName = "path")]
+            public required string Path { get; set; }
+
+            [JsonProperty(PropertyName = "key")]
+            public required string Key { get; set; }
+
+            [JsonProperty(PropertyName = "value")]
+            public required string Value { get; set; }
+            
+            public Registry(string Path, string Key, string Value)
+            {
+                this.Path = Path;
+                this.Key = Key;
+                this.Value = Value;
+            }
+        }
     }
 
     public class Dependencies(bool success, List<Dependency> localDependencies, List<Dependency> remoteDependencies)
@@ -50,6 +74,24 @@ namespace Launcher.Utils
                     Terminal.Debug("Couldn't get list of dependencies.");
             }
             return dependencies;
+        }
+
+        public static bool IsInstalled(StatusContext ctx, Dependency dependency)
+        {
+            Dependency.Registry registry = dependency.RegistryList.First();
+            using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+            {
+                using (var key = hklm.OpenSubKey($@"{registry.Path}"))
+                {
+                    if ((key?.GetValue(registry.Key)) != registry.Value) 
+                    {
+                        Terminal.Warning($"{dependency.Name} is installed already!");
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+            }
         }
 
         public async static Task<Boolean> Install(StatusContext ctx, Dependencies dependencies)

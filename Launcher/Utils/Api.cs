@@ -17,12 +17,12 @@ namespace Launcher.Utils
     public interface IGitHub
     {
         [Headers("User-Agent: ClassicCounter Launcher")]
-        [Get("/repos/koolych/launcher/releases/latest")]
+        [Get("/repos/ClassicCounter/launcher/releases/latest")]
         Task<string> GetLatestRelease();
 
         [Headers("User-Agent: ClassicCounter Launcher",
             "Accept: application/vnd.github.raw+json")]
-        [Get("/repos/koolych/launcher/contents/dependencies.json")]
+        [Get("/repos/ClassicCounter/launcher/contents/dependencies.json")]
         Task<string> GetDependencies();
     }
 
