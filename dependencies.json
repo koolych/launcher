@@ -1,19 +1,40 @@
 {
-	"files":[
+	"files": [
 		{
 			"name": "dxsetup.exe",
 			"download_url": null,
-			"path": "/directx_installer/dxsetup.exe"
+			"path": "/directx_installer/dxsetup.exe",
+			"registry": [
+				{
+					"path": "SOFTWARE\\WOW6432Node\\Microsoft\\DirectX",
+					"key": "InstalledVersion",
+					"data": 0x0000000900000000
+				}
+			]
 		},
 		{
 			"name": "vc_redist.x86.exe",
 			"download_url": "https://aka.ms/vs/17/release/vc_redist.x86.exe",
-			"path": "/dependencies/vc_redist.x86.exe"
+			"path": "/dependencies/vc_redist.x86.exe",
+			"registry": [
+				{
+					"path": "SOFTWARE\\WOW6432Node\\Microsoft\\VisualStudio\\14.0\\VC\\Runtimes\\X64",
+					"key": "Installed",
+					"data": 1
+				}
+			]		
 		},
 		{
 			"name": "vc_redist.x64.exe",
 			"download_url": "https://aka.ms/vs/17/release/vc_redist.x64.exe",
-			"path": "/dependencies/vc_redist.x64.exe"
+			"path": "/dependencies/vc_redist.x64.exe",
+			"registry": [
+				{
+					"path": "SOFTWARE\\WOW6432Node\\Microsoft\\VisualStudio\\14.0\\VC\\Runtimes\\X64",
+					"key": "Installed",
+					"data": 1
+				}
+			]
 		}
 	]
 }

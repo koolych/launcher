@@ -29,20 +29,24 @@ namespace Launcher.Utils
             Dependencies? _dependencies;
             foreach (var dependency in dependencies)
             {
-                if (dependency.URL != null)
+                if (!DependencyManager.IsInstalled(ctx, dependency))
                 {
-                    if (File.Exists($"{Directory.GetCurrentDirectory()}{dependency.Path}"))
-                        File.Delete($"{Directory.GetCurrentDirectory()}{dependency.Path}");
-                    if (Debug.Enabled())
-                        Terminal.Debug($"Downloading {dependency.Name}");
-                    await _downloader.DownloadFileTaskAsync(
-                        $"{dependency.URL}",
-                        $"{Directory.GetCurrentDirectory()}{dependency.Path}");
-                    remote.Add(dependency);
-                }
-                else
-                {
-                    local.Add(dependency);
+                    if (dependency.URL != null)
+                    {
+                        string path = Directory.GetCurrentDirectory() + dependency.Path;
+                        if (File.Exists(path))
+                            File.Delete(path);
+                        if (Debug.Enabled())
+                            Terminal.Debug($"Downloading {dependency.Name}");
+                        await _downloader.DownloadFileTaskAsync(
+                            $"{dependency.URL}",
+                            $"{Directory.GetCurrentDirectory()}{dependency.Path}");
+                        remote.Add(dependency);
+                    }
+                    else
+                    {
+                        local.Add(dependency);
+                    }
                 }
             }
             _dependencies = new Dependencies(false, local, remote);
