@@ -20,6 +20,8 @@ await Task.Delay(1000);
 
 // this int saves total download progress (duh)
 // its used for whenever HandlePatches is called so that the display for downloading files doesnt glitch the fuck out
+
+// TODO: Remove this crap ^ and come up with something else
 int totalDownloadProgress = 0;
 
 string updaterPath = $"{Directory.GetCurrentDirectory()}/updater.exe";
