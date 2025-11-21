@@ -80,7 +80,7 @@ namespace Launcher.Utils
                 }
             }
 
-            string baseUrl = validateAll ? "https://game.classiccounter.cc" : "https://patch.classiccounter.cc";
+            string baseUrl = "https://patch.classiccounter.cc";
 
             if (onProgress != null)
             {
