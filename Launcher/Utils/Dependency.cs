@@ -79,11 +79,12 @@ namespace Launcher.Utils
         public static bool IsInstalled(StatusContext ctx, Dependency dependency)
         {
             Dependency.Registry registry = dependency.RegistryList.First();
-            using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+            using (RegistryKey hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
             {
-                using (var key = hklm.OpenSubKey($@"{registry.Path}"))
+                using (RegistryKey? key = hklm.OpenSubKey($@"{registry.Path}"))
                 {
-                    if ((key?.GetValue(registry.Key)) != registry.Value) 
+                    string? keyValue = key?.GetValue(registry.Key) as string;
+                    if (keyValue != registry.Value)
                     {
                         Terminal.Warning($"{dependency.Name} is installed already!");
                         return true;

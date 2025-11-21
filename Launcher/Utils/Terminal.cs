@@ -8,8 +8,8 @@ namespace Launcher.Utils
         private static string _prefix = "[orange1]Classic[/][blue]Counter[/]";
         private static string _grey = "grey82";
         private static string _seperator = "[grey50]|[/]";
-        static Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Launcher.assets.steamhappy.txt");
-        static string steamhappy = new StreamReader(stream).ReadToEnd();
+        private static Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Launcher.assets.steamhappy.txt");
+        private static string steamhappy = new StreamReader(stream).ReadToEnd();
         public static void Init()
         {
             AnsiConsole.MarkupLine($"{_prefix} {_seperator} [{_grey}]Launcher maintained by [/][purple4_1]koolych[/][{_grey}][/]");

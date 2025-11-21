@@ -17,13 +17,13 @@
 
 ## Arguments
 - `--debug-mode` - Enables debug mode, prints additional info.
-- `--skip-updates` - Skips checking for launcher updates.
-- `--skip-validating` - Skips validating patches.
-- `--validate-all` - Validates all game files.
-- `--patch-only` - Will only check for patches, won't open the game.
 - `--disable-rpc` - Disables Discord RPC.
 - `--gc` - Launches the Game with custom Game Coordinator.
 - `--install-dependencies` - Launches setup process for required Game dependencies.
+- `--patch-only` - Will only check for patches, won't open the game.
+- `--skip-updates` - Skips checking for launcher updates.
+- `--skip-validating` - Skips validating patches.
+- `--validate-all` - Validates all game files.
 
 > [!CAUTION]
 > **Using `--skip-updates` or `--skip-validating` is NOT recommended!**  
@@ -33,9 +33,9 @@
 - [CSGSI](https://github.com/rakijah/CSGSI) by [rakijah](https://github.com/rakijah)
 - [DiscordRichPresence](https://github.com/Lachee/discord-rpc-csharp) by [Lachee](https://github.com/Lachee)
 - [Downloader](https://github.com/bezzad/Downloader) by [bezzad](https://github.com/bezzad)
+- [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) by [shravan2x](https://github.com/shravan2x)
 - [Refit](https://github.com/reactiveui/refit) by [ReactiveUI](https://github.com/reactiveui)
 - [Spectre.Console](https://github.com/spectreconsole/spectre.console) by [Spectre Console](https://github.com/spectreconsole)
-- [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) by [shravan2x](https://github.com/shravan2x)
 
 [downloads-shield]: https://img.shields.io/github/downloads/classiccounter/launcher/total.svg?style=for-the-badge
 [downloads-url]: https://github.com/classiccounter/launcher/releases/latest
