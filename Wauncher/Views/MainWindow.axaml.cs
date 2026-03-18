@@ -66,10 +66,11 @@ namespace Wauncher.Views
 
             this.Opened += (_, _) =>
             {
+#if !DEBUG
                 _ = SetupCarouselAsync();
                 _ = StartupAsync();
                 _ = LoadPatchNotesAsync();
-
+#endif
                 if (DataContext is MainWindowViewModel vm2)
                     vm2.PropertyChanged += (_, e) =>
                     {
