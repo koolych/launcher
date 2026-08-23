@@ -29,17 +29,7 @@ namespace Wauncher.Views
     public partial class MainWindow : Window
     {
         private static readonly HttpClient Http = HttpClientFactory.Shared;
-        private static readonly string CarouselCacheDir =
-            Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "ClassicCounter",
-                "Wauncher",
-                "cache",
-                "carousel");
-
         private const int CarouselRotationIntervalSeconds = 5;
-        private const int CarouselMaxWidth = 1280;
-        private const int CarouselMaxHeight = 720;
 
         private ICarouselService? _carouselService;
         private readonly List<CancellationTokenSource?> _zoomCts = new();
@@ -441,90 +431,15 @@ namespace Wauncher.Views
         {
             try
             {
-                var cachedBytes = await TryGetCachedCarouselBytesAsync(url);
+                var cachedBytes = await CarouselService.TryGetCachedCarouselBytesAsync(url);
                 var bytes = cachedBytes ?? await Http.GetByteArrayAsync(url);
-                var resized = cachedBytes ?? TryResizeCarouselBytes(bytes) ?? bytes;
+                var resized = cachedBytes ?? CarouselService.TryResizeCarouselBytes(bytes) ?? bytes;
 
                 if (cachedBytes == null)
-                    await TryWriteCarouselCacheAsync(url, resized);
+                    await CarouselService.TryWriteCarouselCacheAsync(url, resized);
 
                 using var ms = new MemoryStream(resized);
                 return new Bitmap(ms);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static async Task<byte[]?> TryGetCachedCarouselBytesAsync(string url)
-        {
-            try
-            {
-                var path = GetCarouselCachePath(url);
-                if (!File.Exists(path))
-                    return null;
-
-                return await File.ReadAllBytesAsync(path);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static async Task TryWriteCarouselCacheAsync(string url, byte[] bytes)
-        {
-            try
-            {
-                Directory.CreateDirectory(CarouselCacheDir);
-                var path = GetCarouselCachePath(url);
-                var tempPath = path + ".tmp";
-                await File.WriteAllBytesAsync(tempPath, bytes);
-                File.Move(tempPath, path, overwrite: true);
-            }
-            catch
-            {
-            }
-        }
-
-        private static string GetCarouselCachePath(string url)
-        {
-            var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(url))).ToLowerInvariant();
-            return Path.Combine(CarouselCacheDir, $"{hash}.jpg");
-        }
-
-        private static byte[]? TryResizeCarouselBytes(byte[] bytes)
-        {
-            try
-            {
-                using var sourceBitmap = SKBitmap.Decode(bytes);
-                if (sourceBitmap == null)
-                    return null;
-
-                if (sourceBitmap.Width <= CarouselMaxWidth &&
-                    sourceBitmap.Height <= CarouselMaxHeight)
-                {
-                    return null;
-                }
-
-                var scale = Math.Min(
-                    (double)CarouselMaxWidth / sourceBitmap.Width,
-                    (double)CarouselMaxHeight / sourceBitmap.Height);
-
-                int targetWidth = Math.Max(1, (int)Math.Round(sourceBitmap.Width * scale));
-                int targetHeight = Math.Max(1, (int)Math.Round(sourceBitmap.Height * scale));
-
-                using var resizedBitmap = sourceBitmap.Resize(
-                    new SKImageInfo(targetWidth, targetHeight),
-                    SKFilterQuality.Medium);
-
-                if (resizedBitmap == null)
-                    return null;
-
-                using var image = SKImage.FromBitmap(resizedBitmap);
-                using var data = image.Encode(SKEncodedImageFormat.Jpeg, 88);
-                return data?.ToArray();
             }
             catch
             {

@@ -556,6 +556,26 @@ namespace Wauncher.ViewModels
             {
                 updateNotifier.PropertyChanged += (s, e) =>
                 {
+                    // Hot-path properties fire every download tick — only raise the notifications they affect.
+                    switch (e.PropertyName)
+                    {
+                        case nameof(IUpdateService.UpdateProgress):
+                        case nameof(IUpdateService.UpdateIndeterminate):
+                            OnPropertyChanged(nameof(LaunchProgressScale));
+                            OnPropertyChanged(nameof(StatusBannerText));
+                            return;
+                        case nameof(IUpdateService.UpdateStatusSpeed):
+                            OnPropertyChanged(nameof(StatusBannerSpeed));
+                            return;
+                        case nameof(IUpdateService.UpdateStatus):
+                            OnPropertyChanged(nameof(StatusBannerText));
+                            return;
+                        case nameof(IUpdateService.IsExtracting):
+                            OnPropertyChanged(nameof(IsExtracting));
+                            return;
+                    }
+
+                    // State changes (infrequent) — raise all derived properties and update banner.
                     OnPropertyChanged(nameof(LaunchButtonText));
                     OnPropertyChanged(nameof(StatusBannerText));
                     OnPropertyChanged(nameof(StatusBannerSpeed));

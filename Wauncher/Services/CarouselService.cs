@@ -86,7 +86,7 @@ namespace Wauncher.Services
             return int.MaxValue;
         }
 
-        private static async Task<byte[]?> TryGetCachedCarouselBytesAsync(string url)
+        internal static async Task<byte[]?> TryGetCachedCarouselBytesAsync(string url)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace Wauncher.Services
             }
         }
 
-        private static async Task TryWriteCarouselCacheAsync(string url, byte[] bytes)
+        internal static async Task TryWriteCarouselCacheAsync(string url, byte[] bytes)
         {
             try
             {
@@ -116,17 +116,16 @@ namespace Wauncher.Services
             catch (Exception ex)
             {
                 ErrorLogger.LogError("CarouselService.TryWriteCarouselCacheAsync", ex, $"Failed to write carousel cache for URL: {url}");
-                // Best-effort cache only.
             }
         }
 
-        private static string GetCarouselCachePath(string url)
+        internal static string GetCarouselCachePath(string url)
         {
             var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(url))).ToLowerInvariant();
             return Path.Combine(CarouselCacheDir, $"{hash}.jpg");
         }
 
-        private static byte[]? TryResizeCarouselBytes(byte[] bytes)
+        internal static byte[]? TryResizeCarouselBytes(byte[] bytes)
         {
             try
             {

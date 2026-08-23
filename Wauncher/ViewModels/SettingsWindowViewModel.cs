@@ -27,26 +27,21 @@ namespace Wauncher.ViewModels
         [ObservableProperty]
         private string _launchOptions = string.Empty;
 
+        private bool _isLoading;
+
         public SettingsWindowViewModel()
         {
+            _isLoading = true;
             Load();
+            _isLoading = false;
         }
 
-        partial void OnSkipUpdatesChanged(bool value) { Save(); SkipUpdatesChanged?.Invoke(value); }
-        partial void OnLaunchOptionsChanged(string value) => Save();
-        partial void OnDisableCarouselChanged(bool value)
-        {
-            Save();
-            DisableCarouselChanged?.Invoke(value);
-        }
-        partial void OnDisableHardwareAccelerationChanged(bool value) => Save();
-        partial void OnEnableGcChanged(bool value) => Save();
-
-        partial void OnDiscordRpcChanged(bool value)
-        {
-            Save();
-            DiscordRpcChanged?.Invoke(value);
-        }
+        partial void OnSkipUpdatesChanged(bool value)      { if (_isLoading) return; Save(); SkipUpdatesChanged?.Invoke(value); }
+        partial void OnLaunchOptionsChanged(string value)  { if (_isLoading) return; Save(); }
+        partial void OnDisableCarouselChanged(bool value)  { if (_isLoading) return; Save(); DisableCarouselChanged?.Invoke(value); }
+        partial void OnDisableHardwareAccelerationChanged(bool value) { if (_isLoading) return; Save(); }
+        partial void OnEnableGcChanged(bool value)         { if (_isLoading) return; Save(); }
+        partial void OnDiscordRpcChanged(bool value)       { if (_isLoading) return; Save(); DiscordRpcChanged?.Invoke(value); }
 
         private void Load()
         {
