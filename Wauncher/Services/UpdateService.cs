@@ -362,6 +362,14 @@ namespace Wauncher.Services
             }
             catch (UpdateServerUnreachableException ex)
             {
+                // If the user has a valid cached manifest, the game was up to date last check.
+                // Let them play instead of blocking on a server we can't reach right now.
+                if (PatchManifestCache.Load() != null)
+                {
+                    _cachedPatches = new Patches(true, new List<Patch>(), new List<Patch>());
+                    return _cachedPatches;
+                }
+
                 ErrorLogger.LogError("UpdateService.GetPatchesAsync", ex, "Update server unreachable");
                 UpdateStatusFile = "Error: Can't connect to update server";
                 return null;
