@@ -329,7 +329,10 @@ namespace Wauncher.Services
                 else
                 {
                     collection.Insert(i, src);
-                    indexById[src.SteamId] = i;
+                    // All elements at positions >= i shifted by +1; rebuild the full index.
+                    indexById.Clear();
+                    for (int j = 0; j < collection.Count; j++)
+                        indexById[collection[j].SteamId] = j;
                 }
             }
 

@@ -371,13 +371,13 @@ namespace Wauncher.Utils
             await ExtractSplitArchive(gameFiles.Files.Select(f => f.File).ToList(), onExtractProgress);
         }
 
-        private static async Task<string> CalculateMD5Async(string filename)
+        private static Task<string> CalculateMD5Async(string filename) => Task.Run(() =>
         {
             using var md5 = System.Security.Cryptography.MD5.Create();
-            await using var stream = File.OpenRead(filename);
-            byte[] hash = await Task.Run(() => md5.ComputeHash(stream));
+            using var stream = File.OpenRead(filename);
+            byte[] hash = md5.ComputeHash(stream);
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-        }
+        });
 
         private static readonly DownloadStatus _statusFormatter = new DownloadStatus();
         public static async Task ExtractSplitArchive(List<string> files, Action<double>? onProgress = null)

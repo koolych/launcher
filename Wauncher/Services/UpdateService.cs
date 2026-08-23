@@ -366,6 +366,7 @@ namespace Wauncher.Services
                 // Let them play instead of blocking on a server we can't reach right now.
                 if (PatchManifestCache.Load() != null)
                 {
+                    ErrorLogger.LogError("UpdateService.GetPatchesAsync", ex, "Update server unreachable (cached manifest present — allowing launch)");
                     _cachedPatches = new Patches(true, new List<Patch>(), new List<Patch>());
                     return _cachedPatches;
                 }
