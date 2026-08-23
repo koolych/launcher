@@ -114,6 +114,7 @@ namespace Wauncher.Utils
                 onExtract?.Invoke();
                 string extractPath = Path.Combine(WauncherDirectory, originalFileName);
                 await Extract7z(downloadPath, extractPath, onExtractProgress);
+                try { File.Delete(downloadPath); } catch { }
             }
         }
 
