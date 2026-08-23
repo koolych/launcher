@@ -540,30 +540,6 @@ namespace Wauncher.ViewModels
             {
                 try
                 {
-                    await _serverService.RefreshServersSafeAsync();
-                }
-                catch (Exception ex)
-                {
-                    Terminal.Warning($"Failed to refresh servers: {ex.Message}");
-                }
-            });
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await _friendsService.RefreshFriendsSafeAsync();
-                }
-                catch (Exception ex)
-                {
-                    Terminal.Warning($"Failed to refresh friends: {ex.Message}");
-                }
-            });
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
                     await _updateService.CheckForUpdatesAsync();
                 }
                 catch (Exception ex)

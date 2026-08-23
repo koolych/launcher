@@ -131,7 +131,6 @@ namespace Wauncher.Utils
             Action<Downloader.DownloadProgressChangedEventArgs, string> updateStatus = (progress, filename) =>
             {
                 var speed = progress.BytesPerSecondSpeed / (1024.0 * 1024.0);
-                var progressText = $"{((float)completedFiles / totalFiles * 100):F1}% ({completedFiles}/{totalFiles})";
                 var status = filename.EndsWith(".7z") && progress.ProgressPercentage >= 100 ? "Extracting" : "Downloading new";
                 ctx.Status = _statusFormatter.FormatStatus(status, fileTypePlural, progress.ProgressPercentage, speed, completedFiles, totalFiles);
             };
@@ -186,55 +185,48 @@ namespace Wauncher.Utils
                 foreach (var file in gameFiles.Files)
                 {
                     string filePath = Path.Combine(WauncherDirectory, file.File);
-                    bool needsDownload = true;
-
                     if (File.Exists(filePath))
                     {
-                        string fileHash = CalculateMD5(filePath);
+                        string fileHash = await CalculateMD5Async(filePath);
                         if (fileHash.Equals(file.Hash, StringComparison.OrdinalIgnoreCase))
                         {
-                            needsDownload = false;
                             completedFiles++;
                             continue;
                         }
                     }
 
-                    if (needsDownload)
+                    try
                     {
+                        EventHandler<Downloader.DownloadProgressChangedEventArgs> progressHandler = (sender, e) =>
+                        {
+                            var speed = e.BytesPerSecondSpeed / (1024.0 * 1024.0);
+                            ctx.Status = _statusFormatter.FormatStatus("Downloading", file.File, e.ProgressPercentage, speed, completedFiles, totalFiles);
+                        };
+                        _downloader.DownloadProgressChanged += progressHandler;
+
                         try
                         {
-                            EventHandler<Downloader.DownloadProgressChangedEventArgs> progressHandler = (sender, e) =>
+                            await _downloader.DownloadFileTaskAsync(file.Link, filePath);
+
+                            string downloadedHash = await CalculateMD5Async(filePath);
+                            if (!downloadedHash.Equals(file.Hash, StringComparison.OrdinalIgnoreCase))
                             {
-                                var speed = e.BytesPerSecondSpeed / (1024.0 * 1024.0);
-                                var progressText = $"{((float)completedFiles / totalFiles * 100):F1}% ({completedFiles}/{totalFiles})";
-                                ctx.Status = _statusFormatter.FormatStatus("Downloading", file.File, e.ProgressPercentage, speed, completedFiles, totalFiles);
-                            };
-                            _downloader.DownloadProgressChanged += progressHandler;
-
-                            try
-                            {
-                                await _downloader.DownloadFileTaskAsync(file.Link, filePath);
-
-                                string downloadedHash = CalculateMD5(filePath);
-                                if (!downloadedHash.Equals(file.Hash, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    failedFiles.Add(file.File);
-                                    Terminal.Error($"Hash mismatch for {file.File}");
-                                    continue;
-                                }
-
-                                completedFiles++;
+                                failedFiles.Add(file.File);
+                                Terminal.Error($"Hash mismatch for {file.File}");
+                                continue;
                             }
-                            finally
-                            {
-                                _downloader.DownloadProgressChanged -= progressHandler;
-                            }
+
+                            completedFiles++;
                         }
-                        catch (Exception ex)
+                        finally
                         {
-                            failedFiles.Add(file.File);
-                            Terminal.Error($"Failed to download {file.File}: {ex.Message}");
+                            _downloader.DownloadProgressChanged -= progressHandler;
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        failedFiles.Add(file.File);
+                        Terminal.Error($"Failed to download {file.File}: {ex.Message}");
                     }
                 }
 
@@ -327,7 +319,7 @@ namespace Wauncher.Utils
                 string filePath = Path.Combine(WauncherDirectory, file.File);
 
                 if (File.Exists(filePath) &&
-                    CalculateMD5(filePath).Equals(file.Hash, StringComparison.OrdinalIgnoreCase))
+                    (await CalculateMD5Async(filePath)).Equals(file.Hash, StringComparison.OrdinalIgnoreCase))
                 {
                     completed++;
                     onProgress?.Invoke(file.File, "", (double)completed / total * 100.0);
@@ -353,7 +345,7 @@ namespace Wauncher.Utils
 
                 await downloader.DownloadFileTaskAsync(file.Link, filePath);
 
-                string downloadedHash = CalculateMD5(filePath);
+                string downloadedHash = await CalculateMD5Async(filePath);
                 if (!downloadedHash.Equals(file.Hash, StringComparison.OrdinalIgnoreCase))
                 {
                     try
@@ -378,14 +370,12 @@ namespace Wauncher.Utils
             await ExtractSplitArchive(gameFiles.Files.Select(f => f.File).ToList(), onExtractProgress);
         }
 
-        private static string CalculateMD5(string filename)
+        private static async Task<string> CalculateMD5Async(string filename)
         {
-            using (var md5 = System.Security.Cryptography.MD5.Create())
-            using (var stream = File.OpenRead(filename))
-            {
-                byte[] hash = md5.ComputeHash(stream);
-                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-            }
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            await using var stream = File.OpenRead(filename);
+            byte[] hash = await Task.Run(() => md5.ComputeHash(stream));
+            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
 
         private static readonly DownloadStatus _statusFormatter = new DownloadStatus();

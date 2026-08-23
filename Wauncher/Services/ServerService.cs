@@ -20,7 +20,7 @@ namespace Wauncher.Services
         private readonly HttpClient _httpClient = HttpClientFactory.Shared;
         private const string SERVER_LIST_URL = "https://raw.githubusercontent.com/ways15xx/CC-servers/refs/heads/main/servers.json";
 
-        public bool IsOfflineMode => !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+        public bool IsOfflineMode => Utils.Services.IsOfflineMode;
 
         public ObservableCollection<ServerInfo> Servers { get; } = new()
         {

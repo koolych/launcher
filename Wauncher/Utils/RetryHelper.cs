@@ -67,46 +67,13 @@ namespace Wauncher.Utils
         /// <param name="delayMs">Delay between retries in milliseconds</param>
         /// <param name="exponentialBackoff">Whether to use exponential backoff</param>
         /// <param name="retryCondition">Condition to determine if retry should occur</param>
-        public static async Task ExecuteWithRetryAsync(
+        public static Task ExecuteWithRetryAsync(
             Func<Task> operation,
             int maxRetries = 3,
             int delayMs = 1000,
             bool exponentialBackoff = true,
-            Func<Exception, bool>? retryCondition = null)
-        {
-            if (retryCondition == null)
-                retryCondition = ex => IsRetryableException(ex);
-
-            int attempt = 0;
-            Exception? lastException = null;
-
-            while (attempt <= maxRetries)
-            {
-                try
-                {
-                    await operation();
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    lastException = ex;
-                    attempt++;
-
-                    if (attempt > maxRetries || !retryCondition(ex))
-                    {
-                        Terminal.Error($"Operation failed after {attempt} attempts: {ex.Message}");
-                        throw;
-                    }
-
-                    int currentDelay = exponentialBackoff ? delayMs * (int)Math.Pow(2, attempt - 1) : delayMs;
-                    Terminal.Warning($"Operation failed (attempt {attempt}/{maxRetries + 1}), retrying in {currentDelay}ms: {ex.Message}");
-                    
-                    await Task.Delay(currentDelay);
-                }
-            }
-
-            throw lastException ?? new InvalidOperationException("Operation failed");
-        }
+            Func<Exception, bool>? retryCondition = null) =>
+            ExecuteWithRetryAsync(async () => { await operation(); return 0; }, maxRetries, delayMs, exponentialBackoff, retryCondition);
 
         /// <summary>
         /// Determines if an exception is retryable

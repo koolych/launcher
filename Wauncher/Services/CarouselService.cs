@@ -33,7 +33,7 @@ namespace Wauncher.Services
         private const int CarouselMaxWidth = 1280;
         private const int CarouselMaxHeight = 720;
 
-        public bool IsOfflineMode => !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+        public bool IsOfflineMode => Utils.Services.IsOfflineMode;
 
         public async Task SetupCarouselAsync()
         {

@@ -11,7 +11,7 @@ namespace Wauncher.Services
     public partial class UpdateService : ObservableObject, IUpdateService
     {
         private static string WauncherDirectory =>
-            Path.GetDirectoryName(Environment.ProcessPath ?? string.Empty) ?? Directory.GetCurrentDirectory();
+            Path.GetDirectoryName(Utils.Services.GetExePath()) ?? Directory.GetCurrentDirectory();
 
         [ObservableProperty]
         private bool _isUpdateAvailable;

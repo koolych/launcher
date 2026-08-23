@@ -48,7 +48,7 @@ namespace Wauncher.Utils
 
                 await udp.SendAsync(A2S_INFO_REQUEST, A2S_INFO_REQUEST.Length, endpoint);
 
-                var cts  = new CancellationTokenSource(timeoutMs);
+                using var cts = new CancellationTokenSource(timeoutMs);
                 var recv = await udp.ReceiveAsync(cts.Token);
                 byte[] data = recv.Buffer;
 
@@ -60,9 +60,9 @@ namespace Wauncher.Utils
                     Buffer.BlockCopy(A2S_INFO_REQUEST, 0, challengeRequest, 0, A2S_INFO_REQUEST.Length);
                     Buffer.BlockCopy(data, 5, challengeRequest, A2S_INFO_REQUEST.Length, 4);
 
-                    cts = new CancellationTokenSource(timeoutMs);
+                    using var cts2 = new CancellationTokenSource(timeoutMs);
                     await udp.SendAsync(challengeRequest, challengeRequest.Length, endpoint);
-                    recv = await udp.ReceiveAsync(cts.Token);
+                    recv = await udp.ReceiveAsync(cts2.Token);
                     data = recv.Buffer;
                 }
 

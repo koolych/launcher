@@ -99,7 +99,7 @@ namespace Wauncher.Utils
 
             // GC (Beta): launch the game coordinator (cc.exe) instead of csgo.exe when enabled.
             bool enableGc = false;
-            try { enableGc = Wauncher.ViewModels.SettingsWindowViewModel.LoadGlobal().EnableGc; }
+            try { enableGc = settings.EnableGc; }
             catch { /* fall back to csgo.exe */ }
 
             string gameExe = enableGc ? "cc.exe" : "csgo.exe";

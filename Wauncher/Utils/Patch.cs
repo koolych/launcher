@@ -93,25 +93,7 @@ namespace Wauncher.Utils
         private static async Task<List<Patch>> GetPatches(string? rawJson = null)
         {
             List<Patch> patches = new List<Patch>();
-
-            string responseString;
-            if (rawJson != null)
-            {
-                responseString = rawJson;
-            }
-            else
-            {
-                try
-                {
-                    responseString = await Api.ClassicCounter.GetPatches();
-                }
-                catch (Exception ex)
-                {
-                    if (Debug.Enabled())
-                        Terminal.Debug($"Couldn't reach patch API: {ex.Message}");
-                    throw new UpdateServerUnreachableException("Can't connect to update server", ex);
-                }
-            }
+            string responseString = rawJson ?? await FetchPatchJsonAsync();
 
             try
             {
@@ -147,7 +129,6 @@ namespace Wauncher.Utils
 
             // first only check pak_dat.vpk
             var pakDatPatch = patches.FirstOrDefault(p => p.File == "csgo/pak_dat.vpk");
-            bool skipValidation = false;
 
             if (pakDatPatch != null && !validateAll)
             {
@@ -172,14 +153,12 @@ namespace Wauncher.Utils
                                 string dirHash = await GetHash(dirPathFast);
                                 if (dirHash.Equals(dirPatchFast.Hash, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    skipValidation = true;
                                     return new Patches(true, missing, outdated);
                                 }
                             }
                         }
                         else
                         {
-                            skipValidation = true;
                             return new Patches(true, missing, outdated);
                         }
                     }
@@ -196,7 +175,6 @@ namespace Wauncher.Utils
                 }
             }
 
-            if (!skipValidation)
             {
                 // find pak01_dir.vpk from patch api
                 dirPatch = patches.FirstOrDefault(p => p.File.Contains("pak01_dir.vpk"));

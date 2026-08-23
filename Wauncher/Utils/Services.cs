@@ -35,5 +35,7 @@ namespace Wauncher.Utils
         }
 
         public static bool IsWindows() => OperatingSystem.IsWindows();
+
+        public static bool IsOfflineMode => !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
     }
 }

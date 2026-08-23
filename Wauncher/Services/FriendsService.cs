@@ -23,7 +23,7 @@ namespace Wauncher.Services
         private string _lastKnownSteamId2 = string.Empty;
         private bool _started;
 
-        public bool IsOfflineMode => !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+        public bool IsOfflineMode => Utils.Services.IsOfflineMode;
 
         public ObservableCollection<FriendInfo> Friends { get; } = new();
 
@@ -191,18 +191,7 @@ namespace Wauncher.Services
                     return;
                 }
 
-                if (string.IsNullOrEmpty(Steam.recentSteamID2))
-                {
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        ShowNoFriendsState = false;
-                        FriendsStatus = "Sign in to Steam to see friends.";
-                        FriendsShowStatus = true;
-                    });
-                    return;
-                }
-
-                if (string.IsNullOrEmpty(Steam.recentSteamID64))
+                if (string.IsNullOrEmpty(Steam.recentSteamID2) || string.IsNullOrEmpty(Steam.recentSteamID64))
                 {
                     Dispatcher.UIThread.Post(() =>
                     {
@@ -311,26 +300,36 @@ namespace Wauncher.Services
 
         private static void ApplyFriendsDiff(ObservableCollection<FriendInfo> collection, List<FriendInfo> incoming)
         {
+            var indexById = new Dictionary<string, int>(collection.Count);
+            for (int i = 0; i < collection.Count; i++)
+                indexById[collection[i].SteamId] = i;
+
             for (int i = 0; i < incoming.Count; i++)
             {
                 var src = incoming[i];
-                var existing = collection.FirstOrDefault(f => f.SteamId == src.SteamId);
 
-                if (existing != null)
+                if (indexById.TryGetValue(src.SteamId, out int currentIndex))
                 {
+                    var existing = collection[currentIndex];
                     existing.Username = src.Username;
                     existing.AvatarUrl = src.AvatarUrl;
                     existing.Status = src.Status;
                     existing.QuickJoinIpPort = src.QuickJoinIpPort;
                     existing.QuickJoinServerName = src.QuickJoinServerName;
 
-                    int currentIndex = collection.IndexOf(existing);
                     if (currentIndex != i)
+                    {
                         collection.Move(currentIndex, i);
+                        // Rebuild index after move since positions shifted
+                        indexById.Clear();
+                        for (int j = 0; j < collection.Count; j++)
+                            indexById[collection[j].SteamId] = j;
+                    }
                 }
                 else
                 {
                     collection.Insert(i, src);
+                    indexById[src.SteamId] = i;
                 }
             }
 
@@ -377,19 +376,16 @@ namespace Wauncher.Services
             }
         }
 
+        private static readonly Regex _inGameRegex =
+            new(@"^In Game - (?<name>.+?) \(\d+/\d+\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private static string ExtractServerNameFromStatus(string? status)
         {
             if (string.IsNullOrWhiteSpace(status))
                 return string.Empty;
 
-            var match = Regex.Match(
-                status,
-                @"^In Game - (?<name>.+?) \(\d+/\d+\)$",
-                RegexOptions.IgnoreCase);
-
-            return match.Success
-                ? match.Groups["name"].Value.Trim()
-                : string.Empty;
+            var match = _inGameRegex.Match(status);
+            return match.Success ? match.Groups["name"].Value.Trim() : string.Empty;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
