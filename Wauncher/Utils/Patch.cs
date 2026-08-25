@@ -13,9 +13,16 @@ namespace Wauncher.Utils
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "ClassicCounter", "Wauncher", "patch_manifest.hash");
 
+        private const string CacheVersion = "v2:";
+
         public static string? Load()
         {
-            try { return File.ReadAllText(CachePath).Trim(); }
+            try
+            {
+                var raw = File.ReadAllText(CachePath).Trim();
+                // Old caches (no version prefix) are treated as misses to force re-validation.
+                return raw.StartsWith(CacheVersion) ? raw[CacheVersion.Length..] : null;
+            }
             catch { return null; }
         }
 
@@ -24,7 +31,7 @@ namespace Wauncher.Utils
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(CachePath)!);
-                File.WriteAllText(CachePath, hash);
+                File.WriteAllText(CachePath, CacheVersion + hash);
             }
             catch { }
         }
