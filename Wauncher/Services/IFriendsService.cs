@@ -19,6 +19,7 @@ namespace Wauncher.Services
         Task RefreshFriendsAsync();
         Task RefreshFriendsSafeAsync();
         Task LoadSelfProfileAsync();
+        bool HasEddiesAccount { get; }
         bool IsOfflineMode { get; }
     }
 }

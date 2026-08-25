@@ -24,6 +24,7 @@ namespace Wauncher.Services
         private bool _started;
 
         public bool IsOfflineMode => Utils.Services.IsOfflineMode;
+        public bool HasEddiesAccount { get; private set; } = true;
 
         public ObservableCollection<FriendInfo> Friends { get; } = new();
 
@@ -144,10 +145,15 @@ namespace Wauncher.Services
                     CurrentUserUsername = self.Username;
                 });
             }
+            catch (Refit.ApiException ex) when (ex.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                // 500 = no eddies.cc account exists for this Steam ID.
+                HasEddiesAccount = false;
+            }
             catch (Exception ex)
             {
                 ErrorLogger.LogError("FriendsService.LoadSelfProfileAsync", ex, "Failed to load self profile");
-                // Best-effort profile load; keep defaults on failure.
+                // Network/other error — don't penalise the user; keep defaults.
             }
         }
 

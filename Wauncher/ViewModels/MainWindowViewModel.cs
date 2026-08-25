@@ -219,6 +219,13 @@ namespace Wauncher.ViewModels
                 return;
             }
 
+            if (!_friendsService.HasEddiesAccount)
+            {
+                ConsoleManager.ShowError(
+                    "You need an eddies.cc account to play ClassicCounter.\n\nVisit classiccounter.cc to create one, then relaunch Wauncher.");
+                return;
+            }
+
             if (_gameService.IsRunning())
             {
                 ConsoleManager.ShowError(
