@@ -127,7 +127,8 @@ namespace Wauncher.Utils
             List<Patch> outdated = new();
             Patch? dirPatch = null;
 
-            // first only check pak_dat.vpk
+            // Check pak_dat.vpk as a quick signal — if outdated, force full pak01 recheck.
+            // Never early-return here: non-pak files (swf, dll, txt, etc.) still need checking.
             var pakDatPatch = patches.FirstOrDefault(p => p.File == "csgo/pak_dat.vpk");
 
             if (pakDatPatch != null && !validateAll)
@@ -140,33 +141,12 @@ namespace Wauncher.Utils
                 if (File.Exists(pakDatPath))
                 {
                     string pakDatHash = await GetHash(pakDatPath);
-                    if (pakDatHash.Equals(pakDatPatch.Hash, StringComparison.OrdinalIgnoreCase))
-                    {
-                        // pak_dat.vpk matches — also check pak01_dir.vpk before declaring up to date
-                        var dirPatchFast = patches.FirstOrDefault(p => p.File.Contains("pak01_dir.vpk"));
-                        if (dirPatchFast != null)
-                        {
-                            string dirOriginal = GetOriginalFileName(dirPatchFast.File);
-                            string dirPathFast = Path.Combine(Directory.GetCurrentDirectory(), dirOriginal);
-                            if (File.Exists(dirPathFast))
-                            {
-                                string dirHash = await GetHash(dirPathFast);
-                                if (dirHash.Equals(dirPatchFast.Hash, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    return new Patches(true, missing, outdated);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            return new Patches(true, missing, outdated);
-                        }
-                    }
-                    else
+                    if (!pakDatHash.Equals(pakDatPatch.Hash, StringComparison.OrdinalIgnoreCase))
                     {
                         if (deleteOutdatedFiles)
                             File.Delete(pakDatPath);
                     }
+                    // If pak_dat matches, fall through — non-pak files still need hash checking.
                 }
                 else
                 {
