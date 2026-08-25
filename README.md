@@ -1,9 +1,9 @@
 <p align="center">
- <h2 align="center">ClassicCounter Launcher</h2>
+ <h2 align="center">ClassicCounter Wauncher</h2>
  <p align="center">
-   Launcher for ClassicCounter with Discord RPC, Auto-Updates and More!
+   Wauncher for ClassicCounter with Discord RPC, a Server List, Friends List, Auto-Updates and More!
    <br/>
-   Written in C# using .NET 8.
+   Written in C# using .NET 8 and Avalonia.
  </p>
 </p>
 
@@ -13,29 +13,42 @@
 [![MIT License][license-shield]][license-url]
 
 > [!IMPORTANT]
-> .NET Runtime 8 is required to run the launcher. Download it from [**here**](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-8.0.11-windows-x64-installer).
+> .NET Desktop Runtime 8 is required to run the Wauncher. Download it from [**here**](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.24-windows-x64-installer).
 
-## Arguments
-- `--debug-mode` - Enables debug mode, prints additional info.
-- `--disable-rpc` - Disables Discord RPC.
-- `--gc` - Launches the Game with custom Game Coordinator.
-- `--install-dependencies` - Launches setup process for required Game dependencies.
-- `--patch-only` - Will only check for patches, won't open the game.
-- `--skip-updates` - Skips checking for launcher updates.
-- `--skip-validating` - Skips validating patches.
-- `--validate-all` - Validates all game files.
+> [!IMPORTANT]
+> Wauncher is still a work in progress. Some features are unfinished and you may run into bugs or changes between builds.
 
-> [!CAUTION]
-> **Using `--skip-updates` or `--skip-validating` is NOT recommended!**  
-> **An outdated launcher or patches might cause issues.**
+## Settings
+- `Minimize to System Tray` keeps the launcher running in the background when in-game.
+- `Skip Updates` lets you launch the game even when Wauncher detects available updates.
+- `Add ClassicCounter to Steam` adds Wauncher to Steam as a non-Steam game and applies Steam artwork automatically.
+- `Disable Carousel` turns off the rotating hero images to lower memory usage.
+- `Disable Hardware Acceleration` switches Wauncher to software rendering and restarts the launcher automatically.
+- `Discord RPC` controls whether Wauncher updates your Discord presence. In some cases, Discord may still show "Counter-Strike: Global Offensive" even when RPC is disabled.
+- `Launch Options` lets you pass extra game launch flags such as `-high` or `+fps_max 300`.
+- `Verify Game Files` checks your installation and repairs any missing or damaged game files automatically.
+
+## Build / Publish
+- Build: `dotnet build Wauncher/Wauncher.csproj -c Release`
+- Publish: `dotnet publish Wauncher/Wauncher.csproj -c Release -r win-x64 --self-contained false`
+- Quick publish script: `publish.bat` (builds + hashes + optional copy target)
 
 ## Packages Used
+- [AsyncImageLoader.Avalonia](https://github.com/AvaloniaUtils/AsyncImageLoader.Avalonia) by [AvaloniaUtils](https://github.com/AvaloniaUtils)
+- [Avalonia](https://github.com/AvaloniaUI/Avalonia) by [AvaloniaUI](https://github.com/AvaloniaUI)
+- [Avalonia.Desktop](https://github.com/AvaloniaUI/Avalonia) by [AvaloniaUI](https://github.com/AvaloniaUI)
+- [Avalonia.Themes.Fluent](https://github.com/AvaloniaUI/Avalonia) by [AvaloniaUI](https://github.com/AvaloniaUI)
+- [Avalonia.Fonts.Inter](https://github.com/AvaloniaUI/Avalonia) by [AvaloniaUI](https://github.com/AvaloniaUI)
+- [Avalonia.Diagnostics](https://github.com/AvaloniaUI/Avalonia) by [AvaloniaUI](https://github.com/AvaloniaUI)
+- [CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet) by [CommunityToolkit](https://github.com/CommunityToolkit)
 - [CSGSI](https://github.com/rakijah/CSGSI) by [rakijah](https://github.com/rakijah)
 - [DiscordRichPresence](https://github.com/Lachee/discord-rpc-csharp) by [Lachee](https://github.com/Lachee)
 - [Downloader](https://github.com/bezzad/Downloader) by [bezzad](https://github.com/bezzad)
 - [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) by [shravan2x](https://github.com/shravan2x)
 - [Refit](https://github.com/reactiveui/refit) by [ReactiveUI](https://github.com/reactiveui)
+- [Refit.Newtonsoft.Json](https://github.com/reactiveui/refit) by [ReactiveUI](https://github.com/reactiveui)
 - [Spectre.Console](https://github.com/spectreconsole/spectre.console) by [Spectre Console](https://github.com/spectreconsole)
+- [Svg.Controls.Skia.Avalonia](https://github.com/wieslawsoltes/Svg.Skia) by [wieslawsoltes](https://github.com/wieslawsoltes)
 
 [downloads-shield]: https://img.shields.io/github/downloads/classiccounter/launcher/total.svg?style=for-the-badge
 [downloads-url]: https://github.com/classiccounter/launcher/releases/latest

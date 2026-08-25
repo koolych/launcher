@@ -1,3 +1,119 @@
+# Hotfix
+08/20/2026
+## What's Changed
+- Fixed case opening sometimes throwing "unable to retrieve your item" mid-animation
+- Fixed items occasionally not appearing in your inventory after a match ends and you load into the next map
+- Fixed a rare case where opening a crate could fail to produce any item at all
+
+# Major Update - Game Coordinator Release (Again) ((Again))
+08/20/2026
+## What's Changed
+- Added missing flash files for Spectral Shiv
+- Added missing world model for Spectral Shiv
+- Fixed NOVAGANG Imp Paper Sticker model not appearing when applied to a weapon
+- RU PUG servers are back online again
+- Fixed all known issues with game coordinator (too many to list here)
+- Moved game coordinator hosting to EU server
+- Launcher version 3.2.7 release
+- Migrated to new profiles API
+- Added "Clear Download Cache" button in settings (fixes stuck 7z errors)
+- Fixed launcher not detecting missing game files when Skip Updates was enabled
+- Various bug fixes
+
+# Major Update - Game Coordinator Beta
+06/27/2026
+## What's Changed
+- Added **RU | ClassicCounter | PUG | 128 Tick** server (host located in Moscow)
+- Added **Game Coordinator** support
+- Added Spectral Knives (currently unobtainable to the public, may be used for planned future events)
+- Added ClassicCounter logo to in-game pause menu
+- Added ability to view eddies.cc profiles via clicking players on the in-game scoreboard
+- Removed Herobrine
+- Fixed an issue with Weapon Cases not opening correctly
+- Fixed an issue with Sticker Capsules not opening correctly
+- Fixed an issue with Music Kit Boxes not opening correctly
+- Fixed an issue with scraping stickers
+- Fixed Trade Up Contracts not functioning
+- Fixed certain items failing to appear in Trade Up Contracts
+- Fixed all NOVAGANG Collection items' inspect models
+- Fixed all NOVAGANG Music Kit main menu music not playing in main menu
+- Fixed an issue where some weapon models wouldn't render properly in the inventory
+- Fixed main menu News tab failing to display ClassicCounter server list
+- Fixed missing assets from main menu carousel
+- Added new items to main menu carousel
+- Added launcher settings toggle for **Enable In-Game Inventory** (launches cc.exe with game coordinator)
+- Added error message in the case launcher fails to connect to update server
+- Fixed an issue with launcher failing to verify game files
+- Fixed launcher sometimes staying open as a background process after being closed
+- Fixed launcher not showing an "Update" button when detecting a new patch
+- Removed launcher system tray icon behavior
+- Updated appearance of installation and update progress bars in launcher
+
+# Launcher Update 3.2.1
+06/19/2026
+## What's Changed
+- Added "Enable GC (Beta)" in Settings to launch through the game coordinator (cc.exe)
+
+# Launcher Update 3.2.0
+06/02/2026
+## What's Changed
+- Added an Appearance menu to customize the launcher's colors (Background, Accent, and Text)
+- Settings and Info are no longer separate windows; they now open as panels inside the launcher
+- Redesigned the server selector with a cleaner layout
+- Fixed the launcher getting stuck on "Checking for updates…" when the update server is unreachable
+- Fixed auto-updating, so future versions will install automatically (3.2.0 is the last manual download)
+
+# Minor Update - Bug Fixes
+05/17/2026
+## What's Changed
+- Fixed collection drops not functioning as intended
+- Fixed an issue with drop rarity
+- Fixed drop amounts for donors and non-donors
+- Fed the Horse twice
+
+# Update - Map and Drop Pool Changes
+04/02/2026
+## What's Changed
+- End of ClassicCounter anniversary event
+- Disabled sv_party_mode on all servers
+- Reverted drops back to normal amounts
+- Updated map pool for Spring season
+- Updated drop pool
+- Removed souvenir drops (event/holiday exclusive)
+- Fed the Horse
+- Some servers still need to be restarted for map and drop pool changes to apply.
+- Servers will be restarted during inactive hours.
+
+# Launcher Update 3.1.0
+03/22/2026
+## What's Changed
+- Improved full game downloading and extraction reliability
+- You no longer need an older build installed first for downloads to work reliably
+- Fixed the launcher sometimes staying open in the background after closing the game
+- Improved memory usage
+- Improved Steam detection
+- Added the ability to add ClassicCounter to Steam directly from Wauncher
+- Added a `Disable Carousel` setting for lower memory usage
+- Added a `Disable Hardware Acceleration` setting
+- Improved server browser behavior and added scrolling for longer server lists
+- Server information is now pulled from the live ClassicCounter server list repository
+- Various backend and stability improvements
+
+# Hotfix 
+03/18/2026
+## What's Changed
+- Fixed context menu when page is not in initial position (is scrolled down)
+- Changed how Newest and Oldest sorting works, and added two new sorting methods based on item ID
+- Revamped trading code, so now traded items are properly tracked which allows us in the future to create an accurate trade history
+- Improved the code for validation of items in a trade offer, should fix some bugs
+- StatTrak kills get now reset down to 0 when they get traded away
+- General updates of a weapon no longer update the timestamp used for sorting in the inventory, most commonly seen with StatTrak weapons by getting kills
+- Changed how deleting items works, they are no longer expunged from the database and just remain hidden
+- Made randomness in multiple places on the website more cryptographically safe
+- Fixed traded-up items having incorrect wear name
+- In-game item announcer now works again
+- Trading is no longer under maintainance and is now again available to the public
+
 # Hotfix 
 03/08/2026
 ## What's Changed

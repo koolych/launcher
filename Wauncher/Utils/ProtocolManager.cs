@@ -5,12 +5,15 @@ namespace Wauncher.Utils
     public class ProtocolManager
     {
         public static void RegisterURIHandler()
-        {   
-            var appCurrentLocation = Path.Combine(new FileInfo(System.Environment.ProcessPath).Directory.FullName, "wauncher.exe");
+        {
+            var appCurrentLocation = Services.GetExePath();
+            if (string.IsNullOrWhiteSpace(appCurrentLocation))
+                return;
+
             EnsureKeyExists(Registry.CurrentUser, "Software/Classes/cc", "ClassicCounter");
             SetValue(Registry.CurrentUser, "Software/Classes/cc", "URL Protocol", string.Empty);
             EnsureKeyExists(Registry.CurrentUser, "Software/Classes/cc/DefaultIcon", $"{appCurrentLocation},1");
-            EnsureKeyExists(Registry.CurrentUser, "Software/Classes/cc/shell/open/command", $"\"{appCurrentLocation}\" --protocol-command \"%1\"");
+            EnsureKeyExists(Registry.CurrentUser, "Software/Classes/cc/shell/open/command", $"\"{appCurrentLocation}\" \"%1\"");
         }
 
         private static void SetValue(RegistryKey rootKey, string keys, string valueName, string value)
@@ -19,7 +22,7 @@ namespace Wauncher.Utils
             key.SetValue(valueName, value);
         }
 
-        private static RegistryKey EnsureKeyExists(RegistryKey rootKey, string keys, string defaultValue = null)
+        private static RegistryKey EnsureKeyExists(RegistryKey rootKey, string keys, string? defaultValue = null)
         {
             if (rootKey == null)
             {
