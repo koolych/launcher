@@ -207,6 +207,14 @@ namespace Wauncher.ViewModels
             if (_updateService.IsInstalling || _updateService.IsUpdating || _updateService.IsCheckingUpdates)
                 return;
 
+            if (!_friendsService.HasEddiesAccount)
+            {
+                ConsoleManager.ShowError(
+                    "You need an eddies.cc account to play ClassicCounter.\n\nVisit eddies.cc and login with Steam.");
+                Environment.Exit(0);
+                return;
+            }
+
             if (_updateService.IsNeedingInstall)
             {
                 await InstallGameAsync();
@@ -216,13 +224,6 @@ namespace Wauncher.ViewModels
             if (_updateService.IsUpdateAvailable && !SettingsWindowViewModel.LoadGlobal().SkipUpdates)
             {
                 await ValidateFilesAsync();
-                return;
-            }
-
-            if (!_friendsService.HasEddiesAccount)
-            {
-                ConsoleManager.ShowError(
-                    "You need an eddies.cc account to play ClassicCounter.\n\nVisit classiccounter.cc to create one, then relaunch Wauncher.");
                 return;
             }
 
